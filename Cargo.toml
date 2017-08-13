@@ -1,7 +1,8 @@
 [package]
 name = "pogpen"
+description = "renders parameter inputs and a markdown file to an easy-to-follow operations game plan"
 version = "0.1.0"
-authors = ["Liam Dawson"]
+authors = ["Liam Dawson <liam@liamdawson.me>"]
 
 [dependencies]
 pulldown-cmark = "0.1.0"
