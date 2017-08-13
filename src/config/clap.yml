@@ -1,0 +1,12 @@
+name: pogpen - Parameterised Operations Game Plan rENderer
+about: Generates parameterised operations game plan files (in HTML)
+subcommands:
+    - render:
+        about: render a set of files to a HTML output
+        args:
+            - parameter file:
+                index: 1
+                help: file declaring parameters to use
+            - content file:
+                index: 2
+                help: markdown file with the main content

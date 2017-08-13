@@ -4,3 +4,6 @@ version = "0.1.0"
 authors = ["Liam Dawson"]
 
 [dependencies]
+pulldown-cmark = "0.1.0"
+yaml-rust = "0.3.5"
+clap = { version = "2.26.0", features = ["yaml"] }

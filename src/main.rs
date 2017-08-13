@@ -1,3 +1,9 @@
+#[macro_use]
+extern crate clap;
+
+use clap::App;
+
 fn main() {
-    println!("Hello, world!");
+    let yml = load_yaml!("config/clap.yml");
+    let app = App::from_yaml(yml).get_matches();
 }
