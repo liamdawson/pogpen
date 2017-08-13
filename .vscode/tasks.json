@@ -15,7 +15,12 @@
         {
             "taskName": "cargo run",
             "args": [
-                "run"
+                "run",
+                "--",
+                "render",
+                "test_data/params.yml",
+                "test_data/content.md",
+                "test_data/output.html"
             ]
         },
         {
