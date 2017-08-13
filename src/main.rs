@@ -1,9 +1,12 @@
 #[macro_use]
 extern crate clap;
 extern crate yaml_rust;
+extern crate aurelius;
 
 use clap::{App,ArgMatches};
-use std::io::Read;
+use std::io::{Read,Write};
+
+mod render;
 
 fn main() {
     let yml = load_yaml!("config/clap.yml");
@@ -21,14 +24,19 @@ fn main() {
         Some(_) => unreachable!(),
         None => unreachable!()
     }
+
+    println!("finished");
 }
 
 fn render_from_args(matches : &ArgMatches) -> std::io::Result<()> {
     let params = load_params(matches.value_of("PARAMETERS").unwrap())?;
     let content = load_content(matches.value_of("CONTENT").unwrap())?;
 
-    println!("{:?}", params);
-    println!("{:?}", content);
+    let result = render::render(params, content);
+
+    let mut out_file = std::fs::File::create(matches.value_of("OUTPUT").unwrap())?;
+    out_file.write_all(result.as_bytes())?;
+    out_file.flush()?;
 
     return Ok(());
 }

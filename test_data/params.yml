@@ -1,3 +1,8 @@
-resource_group:
-  type: string
-  value: new-host-spike
+parameters:
+  resource_group:
+    type: string
+    value: new-host-spike
+  admin_password:
+    type: string
+    value: SecurusObscurus
+    secure: true
