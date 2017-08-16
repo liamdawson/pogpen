@@ -12,7 +12,3 @@ parameters:
     name: Output File
     type: string
     value: output.html
-  fake_password:
-    name: Fake Password
-    type: password
-    value: c0ntent_obscured!
