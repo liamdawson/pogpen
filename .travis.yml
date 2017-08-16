@@ -21,8 +21,6 @@ matrix:
     - env: TARGET=x86_64-unknown-linux-musl
 
     # OSX
-    - env: TARGET=i686-apple-darwin
-      os: osx
     - env: TARGET=x86_64-apple-darwin
       os: osx
 
@@ -30,18 +28,6 @@ matrix:
     - env: TARGET=i686-unknown-freebsd DISABLE_TESTS=1
     - env: TARGET=x86_64-unknown-freebsd DISABLE_TESTS=1
     - env: TARGET=x86_64-unknown-netbsd DISABLE_TESTS=1
-
-    # Other architectures
-    - env: TARGET=aarch64-unknown-linux-gnu
-    - env: TARGET=armv7-unknown-linux-gnueabihf
-    - env: TARGET=mips-unknown-linux-gnu
-    - env: TARGET=mips64-unknown-linux-gnuabi64
-    - env: TARGET=mips64el-unknown-linux-gnuabi64
-    - env: TARGET=mipsel-unknown-linux-gnu
-    - env: TARGET=powerpc-unknown-linux-gnu
-    - env: TARGET=powerpc64-unknown-linux-gnu
-    - env: TARGET=powerpc64le-unknown-linux-gnu
-    - env: TARGET=s390x-unknown-linux-gnu DISABLE_TESTS=1
 
     # Testing other channels
     - env: TARGET=x86_64-unknown-linux-gnu
@@ -68,7 +54,7 @@ deploy:
   api_key:
     secure: cIMZW/8ngKG3WBmDfMhgoFsXhsFE9Xs2/uvH8ZV7CrqohsKTebtsq/67s1eegNVKvGICxvW+REwLws42Yo4AT275J/qHp2EC6mAONOvUNI9UFojlx87pYoBc+GUZW2i24W7OEwbXJ2M2c2ypm1/dMkwnjFX3dF/pp9Q+z52Whx0WyGgXfF8aFJ5BAcCVQaL8SP2ZCRzLvdQpmAKA2KCWfrvzsgH6vALMtGf1oyg/iQPgmFSBVzsGRqK5Ywn5guLF1p5UNVPRnYNyrK2Fiu5d9zASbbnVh0yOZ9uMWl3a4X9dNqjoOS99p/MlWF96WLz+JwFLBoHaUSa86t1rOj/JWuyKvu2GXU2plahgYtll6kI7SmBYBpEI8bCMss0XOMGfYwzBnT1+LULU9yIacsNQKqYLznnYrKL40UDyVx5EAfyVsCi+2Qz8bYv/jMpHu8er42UZwcAlkS2AP+UaA14MJ9gXVsNYqppspzdxQr/6oY30p2I7bguJgjFXFJXX+GphZn5MQMnYZr5NLPvrCzI6cJtlOsvXk4bagcVTIp5UWmnpJUhJwqlYxaCIVBg4XrW2SBdalcFyYI62TmaxASaR5OR3QQBFuts3/Yvpu4aSkYeOJS/rvV9WVwLQNHI9j16FV1IuOqzxZUl9k9gH+eQhIFBTov6kytf2jX0Fxcp8gms=
   file_glob: true
-  file: $CRATE_NAME-$TRAVIS_TAG-$TARGET.*
+  file: $CRATE_NAME-$TARGET.*
   on:
     condition: $TRAVIS_RUST_VERSION = stable
     tags: true
