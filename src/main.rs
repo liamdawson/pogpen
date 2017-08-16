@@ -1,7 +1,7 @@
 #[macro_use] extern crate clap;
 #[macro_use] extern crate serde_derive;
 extern crate yaml_rust;
-extern crate aurelius;
+extern crate pulldown_cmark;
 
 use clap::{App,ArgMatches};
 use std::io::{Read,Write};

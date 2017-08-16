@@ -1,6 +1,6 @@
 extern crate yaml_rust;
 extern crate handlebars;
-extern crate aurelius;
+extern crate pulldown_cmark;
 
 use std::io::{Error,ErrorKind,Result};
 
@@ -9,8 +9,10 @@ fn template() -> &'static str {
     return include_str!("../config/default.html.hbs");
 }
 
-pub fn render(parameters_doc : &yaml_rust::Yaml, content : String) -> Result<String> {
-    let content = aurelius::markdown::to_html_cmark(content.as_str());
+pub fn render(parameters_doc : &yaml_rust::Yaml, content_doc : String) -> Result<String> {
+    let mut content = String::new(); // aurelius::markdown::to_html_cmark(content.as_str());
+    let parser = pulldown_cmark::Parser::new(&content_doc);
+    pulldown_cmark::html::push_html(&mut content, parser);
 
     let mut renderer = handlebars::Handlebars::new();
     renderer.register_template_string("html", template())
