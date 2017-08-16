@@ -44,15 +44,65 @@
             letter-spacing: -0.5px;
             border-bottom: 1px solid #ddd;
         }
+        code {
+            color: #a22;
+        }
+        pre {
+            width: 100%;
+            overflow-x: auto;
+            border-radius: 4px;
+            padding: 1ex 1em;
+            background-color: #233;
+        }
+        pre>code {
+            color: #eee;
+            border: none;
+            background: transparent;
+            padding: none;
+        }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.10/handlebars.min.js"></script>
+    <script>
+        playbook = {
+            parameters: {
+
+            }
+        };
+
+        window.updatePlaybookParameter = function (target) {
+            playbook.parameters[target.id] = target.value;
+        };
+
+        Handlebars.registerHelper('parameterValue', function (id) {
+            return "TODO";
+        });
+
+        Handlebars.registerHelper('parameterName', function (id) {
+            return "TODO";
+        });
+    </script>
+    <script id="content-template" type="text/x-handlebars-template">
+        {{{content}}}
+    </script>
 </head>
 <body>
     <div class="parameters-config">
         <h3>Parameters</h3>
+        {{#each parameters}}
+        <div class="parameter">
+            <label>
+                {{name}}
+                <input type="text" value="{{value}}" id="{{id}}" oninput="updatePlaybookParameter(this)">
+            </label>
+        </div>
+        {{/each}}
     </div>
-    <section class="playbook-content">
-        {{{ playbookContent }}}
+    <section id="playbook-content" class="playbook-content">
     </section>
-
+    <script>
+        var source = document.getElementById("content-template").innerHTML;
+        var target = document.getElementById("playbook-content");
+        target.innerHTML = Handlebars.compile(source)({});
+    </script>
 </body>
 </html>

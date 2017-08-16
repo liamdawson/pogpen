@@ -1,8 +1,14 @@
 parameters:
-  resource_group:
+  parametersFileName:
+    name: Parameters File
     type: string
-    value: new-host-spike
-  admin_password:
+    secure: false
+    value: params.yml
+  contentFileName:
+    name: Content File
     type: string
-    value: SecurusObscurus
-    secure: true
+    value: content.md
+  outputFileName:
+    name: Output File
+    type: string
+    value: output.html

@@ -1,5 +1,5 @@
-#[macro_use]
-extern crate clap;
+#[macro_use] extern crate clap;
+#[macro_use] extern crate serde_derive;
 extern crate yaml_rust;
 extern crate aurelius;
 
@@ -32,7 +32,7 @@ fn render_from_args(matches : &ArgMatches) -> std::io::Result<()> {
     let params = load_params(matches.value_of("PARAMETERS").unwrap())?;
     let content = load_content(matches.value_of("CONTENT").unwrap())?;
 
-    let result = render::render(params, content);
+    let result = render::render(&params, content);
 
     let mut out_file = std::fs::File::create(matches.value_of("OUTPUT").unwrap())?;
     out_file.write_all(result?.as_bytes())?;
