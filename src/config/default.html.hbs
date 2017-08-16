@@ -25,6 +25,16 @@
             height: 100%;
             background: #fff;
             position: fixed;
+            overflow-y: scroll;
+        }
+        div.parameters-config label input {
+            display: block;
+            width: 100%;
+            font-family: 'Roboto Mono', monospace;
+            padding: 0.5ex 1em;
+            border: 1px solid #233;
+            border-radius: 4px;
+            margin-bottom: 1em;
         }
         section.playbook-content {
             margin-left: 30vw;
@@ -65,20 +75,27 @@
     <script>
         playbook = {
             parameters: {
-
+                {{#each parameters}}
+                "{{id}}": {
+                    name: "{{name}}",
+                    value: "{{value}}"
+                },
+                {{/each}}
+                "internal-pogpen-unused-hack": {}
             }
         };
 
         window.updatePlaybookParameter = function (target) {
-            playbook.parameters[target.id] = target.value;
+            playbook.parameters[target.id.substring(6)].value = target.value;
+            render();
         };
 
         Handlebars.registerHelper('parameterValue', function (id) {
-            return "TODO";
+            return playbook.parameters[id].value;
         });
 
         Handlebars.registerHelper('parameterName', function (id) {
-            return "TODO";
+            return playbook.parameters[id].name;
         });
     </script>
     <script id="content-template" type="text/x-handlebars-template">
@@ -86,23 +103,40 @@
     </script>
 </head>
 <body>
-    <div class="parameters-config">
+    <div class="parameters-config" id="parameters-config">
         <h3>Parameters</h3>
         {{#each parameters}}
-        <div class="parameter">
-            <label>
-                {{name}}
-                <input type="text" value="{{value}}" id="{{id}}" oninput="updatePlaybookParameter(this)">
-            </label>
-        </div>
+        <label>
+            {{name}}
+            <input type="{{param_field_type}}" value="{{value}}" id="param-{{id}}" oninput="updatePlaybookParameter(this)">
+        </label>
         {{/each}}
     </div>
     <section id="playbook-content" class="playbook-content">
     </section>
     <script>
-        var source = document.getElementById("content-template").innerHTML;
-        var target = document.getElementById("playbook-content");
-        target.innerHTML = Handlebars.compile(source)({});
+        var paramsContainer = document.getElementById("parameters-config");
+        var labels = paramsContainer.getElementsByTagName("label");
+        var mappings = Array.prototype
+            .map.bind(labels)(label => {
+                var inputs = label.getElementsByTagName("input");
+                if (inputs.length > 0)
+                {
+                    var input = inputs[0];
+                    return [input.id.substring(6), input.value];
+                }
+                return [];
+            })
+            .filter(pair => pair.length > 0)
+            .forEach(pair => playbook.parameters[pair[0]].value = pair[1]);
+
+        function render() {
+            var source = document.getElementById("content-template").innerHTML;
+            var target = document.getElementById("playbook-content");
+            target.innerHTML = Handlebars.compile(source)({});
+        }
+
+        render();
     </script>
 </body>
 </html>

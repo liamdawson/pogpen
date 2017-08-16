@@ -1,14 +1,18 @@
 parameters:
-  parametersFileName:
+  params_file_name:
     name: Parameters File
     type: string
     secure: false
     value: params.yml
-  contentFileName:
+  content_file_name:
     name: Content File
     type: string
     value: content.md
-  outputFileName:
+  output_file_name:
     name: Output File
     type: string
     value: output.html
+  fake_password:
+    name: Fake Password
+    type: password
+    value: c0ntent_obscured!

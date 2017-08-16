@@ -9,21 +9,29 @@ To use `pogpen` to create a playbook file, you first need to prepare the inputs.
 Parameters are gathered into a file as such:
 
     parameters:
-      parametersFileName:
+      params_file_name:
         name: Parameters File
         type: string
-        secure: false
         value: params.yml
-      contentFileName:
+      content_file_name:
         name: Content File
         type: string
         value: content.md
-      outputFileName:
+      output_file_name:
         name: Output File
         type: string
         value: output.html
+      fake_password:
+        name: Unused password
+        type: password
+        value: c0ntent_obscured
 
-Save this file as `{{ parameterValue parametersFileName }}`.
+Save this file as `{{ parameterValue 'params_file_name' }}`.
+
+The following values as supported for the `type` field:
+
+* string
+* password (obscures the input in the parameters pane *only*)
 
 ### Content File
 
@@ -34,14 +42,14 @@ An example:
 
     # Hello World!
 
-    Here's an example of using an input parameter's value: \{{ parameterValue parametersFileName }}.
+    Here's an example of using an input parameter's value: \{{ parameterValue 'params_file_name' }}.
 
-    The value above will be replaced with whatever the value of the `\{{ parameterName parametersFileName }}` parameter.
+    The value above will be replaced with whatever the value of the `\{{ parameterName 'params_file_name' }}` parameter.
 
-Save this file as `{{ parameterValue contentFileName }}`.
+Save this file as `{{ parameterValue 'content_file_name' }}`.
 
 ### Rendering
 
-Use the `pogpen` utility with the input parameters `{{ parameterName parametersFileName }}`, `{{ parameterName contentFileName }}`, and `{{ parameterName outputFileName }}`, e.g.:
+Use the `pogpen` utility with the input parameters `{{ parameterName 'params_file_name' }}`, `{{ parameterName 'content_file_name' }}`, and `{{ parameterName 'output_file_name' }}`, e.g.:
 
-    pogpen "{{ parameterValue parametersFileName }}" "{{ parameterValue contentFileName }}" "{{ parameterName outputFileName }}"
+    pogpen "{{ parameterValue 'params_file_name' }}" "{{ parameterValue 'content_file_name' }}" "{{ parameterValue 'output_file_name' }}"
