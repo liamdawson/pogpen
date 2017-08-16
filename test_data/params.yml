@@ -1,3 +1,14 @@
-resource_group:
-  type: string
-  value: new-host-spike
+parameters:
+  params_file_name:
+    name: Parameters File
+    type: string
+    secure: false
+    value: params.yml
+  content_file_name:
+    name: Content File
+    type: string
+    value: content.md
+  output_file_name:
+    name: Output File
+    type: string
+    value: output.html
