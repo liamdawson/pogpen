@@ -35,7 +35,7 @@ fn render_from_args(matches : &ArgMatches) -> std::io::Result<()> {
     let result = render::render(params, content);
 
     let mut out_file = std::fs::File::create(matches.value_of("OUTPUT").unwrap())?;
-    out_file.write_all(result.as_bytes())?;
+    out_file.write_all(result?.as_bytes())?;
     out_file.flush()?;
 
     return Ok(());
