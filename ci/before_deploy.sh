@@ -19,11 +19,10 @@ main() {
 
     cross rustc --bin pogpen --target $TARGET --release -- -C lto
 
-    # TODO Update this to package the right artifacts
     cp target/$TARGET/release/pogpen $stage/
 
     cd $stage
-    tar czf $src/$CRATE_NAME-$TRAVIS_TAG-$TARGET.tar.gz *
+    tar czf $src/$CRATE_NAME-$TARGET.tar.gz *
     cd $src
 
     rm -rf $stage
