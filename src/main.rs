@@ -9,13 +9,18 @@ use std::io::{Read,Write};
 mod render;
 
 fn main() {
-    let yml = load_yaml!("config/clap.yml");
-
-    let app = App::from_yaml(yml)
-        .name(crate_name!())
-        .author(crate_authors!())
-        .version(crate_version!())
-        .about(crate_description!());
+    let app = clap_app!(app =>
+        (name: crate_name!())
+        (version: crate_version!())
+        (author: crate_authors!())
+        (about: crate_description!())
+        (@setting SubcommandRequiredElseHelp)
+        (@subcommand render => 
+            (about: "renders input to a playbook file")
+            (@arg PARAMETERS: * "parameters file (as YAML)")
+            (@arg CONTENT: * "content file (as Markdown)")
+            (@arg OUTPUT: * "destination file for rendered playbook (as HTML)")
+        ));
 
     let matches = app.get_matches();
 
