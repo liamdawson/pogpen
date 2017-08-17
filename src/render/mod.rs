@@ -1,6 +1,9 @@
 extern crate yaml_rust;
 extern crate handlebars;
 extern crate pulldown_cmark;
+extern crate serde_yaml;
+
+pub mod parameter;
 
 use std::io::{Error,ErrorKind,Result};
 

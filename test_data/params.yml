@@ -1,14 +1,21 @@
 parameters:
   params_file_name:
     name: Parameters File
-    type: string
-    secure: false
+    format: String
     value: params.yml
   content_file_name:
     name: Content File
-    type: string
+    format: String
     value: content.md
   output_file_name:
     name: Output File
-    type: string
+    format: String
     value: output.html
+  test_bool:
+    name: Test Boolean
+    format: Boolean
+    value: true
+  test_secret:
+    name: Test Secret
+    format: Secret
+    value: 0bscured?

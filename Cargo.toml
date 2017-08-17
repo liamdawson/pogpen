@@ -1,7 +1,7 @@
 [package]
 name = "pogpen"
 description = "renders parameter inputs and a markdown file to an easy-to-follow operations game plan"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Liam Dawson <liam@liamdawson.me>"]
 
 [dependencies]
@@ -11,3 +11,4 @@ clap = "2.26.0"
 handlebars = "0.26.2"
 serde_derive = "1.0"
 serde = "1.0"
+serde_yaml = "0.7"
