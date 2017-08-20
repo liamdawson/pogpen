@@ -15,7 +15,6 @@
         };
 
         (function () {
-            var specialTags = {boolean: 'checkbox', choice: 'select'};
             var inputTypeMappings = {text: 'text', secret: 'password', number: 'number'};
             // generate fields for each playbook item
             window.playbook.parameterFields = Object
@@ -35,7 +34,20 @@
                     label.appendChild(labelText);
 
                     if(formatSelector === 'choice') {
+                        // always select the first item
+                        param.value = 0;
+
                         field = document.createElement('select');
+
+                        param.values.forEach(function (val, ind) {
+                            var option = document.createElement('option');
+                            option.appendChild(document.createTextNode(val));
+                            option.value = ind;
+                            if (ind === param.value) {
+                                option.setAttribute('selected', 'selected');
+                            }
+                            field.appendChild(option);
+                        });
                     } else {
                         field = document.createElement('input');
 
@@ -45,14 +57,13 @@
                                 field.setAttribute('checked', 'checked');
                             }
                         } else {
-                            field.setAttribute('type', inputTypeMappings[param.format] || 'text');
+                            field.setAttribute('type', inputTypeMappings[formatSelector] || 'text');
                             field.value = param.value;
                         }
                     }
 
                     if (field) {
                         label.appendChild(field);
-                        field.setAttribute('disabled', 'disabled');
                     }
 
                     return label;
@@ -128,11 +139,24 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.10/handlebars.min.js"></script>
     <script>
         Handlebars.registerHelper('parameterVal', function (id) {
-            return "TODO";
+            var parameter = window.playbook.parameters[id];
+
+            if (!parameter) {
+                return '<<!MISSING PARAMETER DEFINITION FOR "' + id + '">>';
+            }
+
+            return parameter.value === undefined ? '' : parameter.value;
         });
 
         Handlebars.registerHelper('parameterName', function (id) {
-            return "TODO";
+            var parameter = window.playbook.parameters[id];
+
+            if (!parameter) {
+                return '<<!MISSING PARAMETER DEFINITION FOR "' + id + '">>';
+            }
+
+            return parameter.name || id;
+ 
         });
     </script>
 </head>
@@ -149,6 +173,14 @@
                 .getElementById('parameters-list')
                 .appendChild(parameterField);
         });
+
+        window.playbook.render = function () {
+            var source = document.getElementById("content-template").innerHTML;
+            var target = document.getElementById("playbook-content");
+            target.innerHTML = Handlebars.compile(source)(window.playbook);
+        }
+
+        window.playbook.render();
     </script>
 </body>
 </html>
