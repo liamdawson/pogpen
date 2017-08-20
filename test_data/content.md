@@ -42,9 +42,11 @@ An example:
 
     # Hello World!
 
-    Here's an example of using an input parameter's value: \{{ parameterVal 'params_file_name' }}.
+    Here's an example of using an input parameter's value:
+    \{{ parameterVal 'params_file_name' }}.
 
-    The value above will be replaced with whatever the value of the `\{{ parameterName 'params_file_name' }}` parameter.
+    The value above will be replaced with whatever the value
+    of the `\{{ parameterName 'params_file_name' }}` parameter.
 
 Save this file as `{{ parameterVal 'content_file_name' }}`.
 

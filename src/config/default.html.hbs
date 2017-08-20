@@ -38,6 +38,7 @@
                         param.value = 0;
 
                         field = document.createElement('select');
+                        field.setAttribute('disabled', 'disabled');
 
                         param.values.forEach(function (val, ind) {
                             var option = document.createElement('option');
@@ -56,9 +57,16 @@
                             if(param.value) {
                                 field.setAttribute('checked', 'checked');
                             }
+                            field.setAttribute('disabled', 'disabled');
                         } else {
                             field.setAttribute('type', inputTypeMappings[formatSelector] || 'text');
                             field.value = param.value;
+                            field.addEventListener('input', function (el) {
+                                param.value = el.target.value;
+                                if (window.playbook.render) {
+                                    window.playbook.render();
+                                }
+                            });
                         }
                     }
 
@@ -92,7 +100,11 @@
             position: fixed;
             overflow-y: scroll;
         }
-        div.parameters-config label input {
+        div.parameters-config label {
+            display: block;
+            min-height: 48px;
+        }
+        div.parameters-config label input:not([type=checkbox]), div.parameters-config label select {
             display: block;
             width: 100%;
             font-family: 'Roboto Mono', monospace;
@@ -174,10 +186,11 @@
                 .appendChild(parameterField);
         });
 
+        window.playbookTemplate = Handlebars.compile(document.getElementById("content-template").innerHTML);
+
         window.playbook.render = function () {
-            var source = document.getElementById("content-template").innerHTML;
             var target = document.getElementById("playbook-content");
-            target.innerHTML = Handlebars.compile(source)(window.playbook);
+            target.innerHTML = window.playbookTemplate(window.playbook);
         }
 
         window.playbook.render();
