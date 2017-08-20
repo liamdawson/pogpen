@@ -1,15 +1,15 @@
 parameters:
   params_file_name:
     name: Parameters File
-    format: String
+    format: Text
     value: params.yml
   content_file_name:
     name: Content File
-    format: String
+    format: Text
     value: content.md
   output_file_name:
     name: Output File
-    format: String
+    format: Text
     value: output.html
   test_bool:
     name: Test Boolean
@@ -19,3 +19,13 @@ parameters:
     name: Test Secret
     format: Secret
     value: 0bscured?
+  test_choice:
+    name: Test Choice
+    format: Choice
+    values:
+      - Yes
+      - No
+  test_number:
+    name: Test Number
+    format: Number
+    value: 42

@@ -1,20 +1,9 @@
-use std::collections::HashMap;
-
 #[derive(Serialize, Deserialize, Debug)]
-pub struct ContextFile {
-    parameters: HashMap<String, ParameterDetail>
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-struct ParameterDetail {
-    name: Option<String>,
-    format: Option<ParameterFormat>,
-    value: Option<String>
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-enum ParameterFormat {
-    String,
-    Boolean,
-    Secret
+#[serde(tag = "format")]
+pub enum ParameterDetail {
+    Text { name : Option<String>, value : Option<String> },
+    Secret { name : Option<String>, value : Option<String> },
+    Boolean { name : Option<String>, value : Option<bool> },
+    Choice { name : Option<String>, values : Vec<String> },
+    Number { name : Option<String>, value : Option<i32> }
 }

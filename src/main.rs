@@ -42,19 +42,23 @@ fn main() {
 }
 
 fn render_from_args(matches : &ArgMatches) -> std::io::Result<()> {
-    let mut context_file = load_context_file(matches.value_of("PARAMETERS").unwrap())?;
-    println!("{:?}", context_file);
+    let context = load_context(matches.value_of("PARAMETERS").unwrap())?;
+    let content = load_content(matches.value_of("CONTENT").unwrap())?;
 
-    let mut content = load_content(matches.value_of("CONTENT").unwrap())?;
+    let mut out_file = std::fs::File::create(matches.value_of("OUTPUT").unwrap())?;
+
+    out_file.write_all(render::render(context, content)?.as_bytes())?;
+    out_file.flush()?;
+
     return Ok(());
 }
 
-fn load_context_file(path : &str) -> std::io::Result<render::parameter::ContextFile> {
+fn load_context(path : &str) -> std::io::Result<render::context::ContextFile> {
     let mut context_str = String::new();
     let mut context_file = std::fs::File::open(path)?;
     context_file.read_to_string(&mut context_str)?;
 
-    let context : render::parameter::ContextFile = serde_yaml::from_str(&mut context_str)
+    let context : render::context::ContextFile = serde_yaml::from_str(&mut context_str)
         .map_err(|err| invalid_data_err(&format!("unable to read context file: {}", err)))?;
 
     return Ok(context);
