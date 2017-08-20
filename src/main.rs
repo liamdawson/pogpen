@@ -19,7 +19,7 @@ fn main() {
         (@setting SubcommandRequiredElseHelp)
         (@subcommand render => 
             (about: "renders input to a playbook file")
-            (@arg PARAMETERS: * "parameters file (as YAML)")
+            (@arg CONTEXT: * "context file (as YAML)")
             (@arg CONTENT: * "content file (as Markdown)")
             (@arg OUTPUT: * "destination file for rendered playbook (as HTML)")
         ));
@@ -42,7 +42,7 @@ fn main() {
 }
 
 fn render_from_args(matches : &ArgMatches) -> std::io::Result<()> {
-    let context = load_context(matches.value_of("PARAMETERS").unwrap())?;
+    let context = load_context(matches.value_of("CONTEXT").unwrap())?;
     let content = load_content(matches.value_of("CONTENT").unwrap())?;
 
     let mut out_file = std::fs::File::create(matches.value_of("OUTPUT").unwrap())?;

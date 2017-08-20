@@ -18,7 +18,7 @@
                 "run",
                 "--",
                 "render",
-                "test_data/params.yml",
+                "test_data/context.yml",
                 "test_data/content.md",
                 "test_data/output.html"
             ]

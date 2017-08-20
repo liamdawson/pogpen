@@ -1,8 +1,8 @@
 parameters:
   params_file_name:
-    name: Parameters File
+    name: Context File
     format: Text
-    value: params.yml
+    value: context.yml
   content_file_name:
     name: Content File
     format: Text
@@ -11,20 +11,24 @@ parameters:
     name: Output File
     format: Text
     value: output.html
-  test_bool:
-    name: Test Boolean
+  show_type_info:
+    name: Show Context Type Info
     format: Boolean
     value: true
+    description: >
+      Show more details about types
+      in the context file?
   test_secret:
     name: Test Secret
     format: Secret
     value: 0bscured?
-  test_choice:
-    name: Test Choice
+  inputs_nomenclature:
+    name: Name for pogpen arguments
     format: Choice
     values:
-      - Yes
-      - No
+      - inputs
+      - parameters
+      - arguments
   test_number:
     name: Test Number
     format: Number

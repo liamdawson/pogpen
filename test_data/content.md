@@ -2,51 +2,40 @@
 
 ## Usage
 
-To use `pogpen` to create a playbook file, you first need to prepare the inputs.
+To use `pogpen` to create a playbook file, you first need to prepare the {{ parameterVal 'inputs_nomenclature' }}.
 
-### Parameters File
+### Context File
 
-Parameters are gathered into a file as such:
-
-    parameters:
-      params_file_name:
-        name: Parameters File
-        type: string
-        value: params.yml
-      content_file_name:
-        name: Content File
-        type: string
-        value: content.md
-      output_file_name:
-        name: Output File
-        type: string
-        value: output.html
-      fake_password:
-        name: Unused password
-        type: password
-        value: c0ntent_obscured
+Parameters are gathered into a context file. See the example
+context file for this playbook for usage samples.
 
 Save this file as `{{ parameterVal 'params_file_name' }}`.
 
+{{#if parameters.show_type_info.value}}
+
 The following values as supported for the `type` field:
 
-* string
-* password (obscures the input in the parameters pane *only*)
+* Text
+* Secret
+* Boolean
+* Choice
+* Number
+
+Samples of each should be provided in the sample.
+
+{{else}}
+**NOTE:** *Context file type info hidden due to {{parameterName 'show_type_info'}} being `{{parameterVal 'show_type_info'}}`.*
+{{/if}}
 
 ### Content File
 
 The content file is a markdown (CommonMark) file that can reference the parameters to
 provide the content of the playbook.
 
-An example:
+Refer to this test data file for usage examples.
 
-    # Hello World!
-
-    Here's an example of using an input parameter's value:
-    \{{ parameterVal 'params_file_name' }}.
-
-    The value above will be replaced with whatever the value
-    of the `\{{ parameterName 'params_file_name' }}` parameter.
+Secrets will be shown in plain-text in output,
+at this time. (e.g. `{{ parameterVal 'test_secret' }}`)
 
 Save this file as `{{ parameterVal 'content_file_name' }}`.
 

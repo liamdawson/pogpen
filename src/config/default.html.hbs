@@ -35,16 +35,21 @@
 
                     if(formatSelector === 'choice') {
                         // always select the first item
-                        param.value = 0;
+                        param.value = param.values[0];
 
                         field = document.createElement('select');
-                        field.setAttribute('disabled', 'disabled');
+                        field.addEventListener('input', function (el) {
+                            param.value = el.target.value;
+                            if (window.playbook.render) {
+                                window.playbook.render();
+                            }
+                        });
 
-                        param.values.forEach(function (val, ind) {
+                        param.values.forEach(function (val) {
                             var option = document.createElement('option');
                             option.appendChild(document.createTextNode(val));
-                            option.value = ind;
-                            if (ind === param.value) {
+                            option.value = val;
+                            if (val === param.value) {
                                 option.setAttribute('selected', 'selected');
                             }
                             field.appendChild(option);
@@ -57,7 +62,12 @@
                             if(param.value) {
                                 field.setAttribute('checked', 'checked');
                             }
-                            field.setAttribute('disabled', 'disabled');
+                            field.addEventListener('change', function (el) {
+                                param.value = !!el.target.checked;
+                                if (window.playbook.render) {
+                                    window.playbook.render();
+                                }
+                            });
                         } else {
                             field.setAttribute('type', inputTypeMappings[formatSelector] || 'text');
                             field.value = param.value;
