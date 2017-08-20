@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Playbook</title>
+    <script id="content-template" type="text/x-handlebars-template">
+        <h1>POGPEN Playbook</h1>
+<h2>Usage</h2>
+<p>To use <code>pogpen</code> to create a playbook file, you first need to prepare the {{ parameterVal 'inputs_nomenclature' }}.</p>
+<h3>Context File</h3>
+<p>Parameters are gathered into a context file. See the example
+context file for this playbook for usage samples.</p>
+<p>Save this file as <code>{{ parameterVal 'params_file_name' }}</code>.</p>
+<p>{{#if parameters.show_type_info.value}}</p>
+<p>The following values as supported for the <code>type</code> field:</p>
+<ul>
+<li>Text</li>
+<li>Secret</li>
+<li>Boolean</li>
+<li>Choice</li>
+<li>Number</li>
+</ul>
+<p>Samples of each should be provided in the sample.</p>
+<p>{{else}}
+<strong>NOTE:</strong> <em>Context file type info hidden due to {{parameterName 'show_type_info'}} being <code>{{parameterVal 'show_type_info'}}</code>.</em>
+{{/if}}</p>
+<h3>Content File</h3>
+<p>The content file is a markdown (CommonMark) file that can reference the parameters to
+provide the content of the playbook.</p>
+<p>Refer to this test data file for usage examples.</p>
+<p>Secrets will be shown in plain-text in output,
+at this time. (e.g. <code>{{ parameterVal 'test_secret' }}</code>)</p>
+<p>Save this file as <code>{{ parameterVal 'content_file_name' }}</code>.</p>
+<h3>Rendering</h3>
+<p>Use the <code>pogpen</code> utility with the input parameters <code>{{ parameterName 'params_file_name' }}</code>, <code>{{ parameterName 'content_file_name' }}</code>, and <code>{{ parameterName 'output_file_name' }}</code>, e.g.:</p>
+<pre><code>pogpen &quot;{{ parameterVal 'params_file_name' }}&quot; &quot;{{ parameterVal 'content_file_name' }}&quot; &quot;{{ parameterVal 'output_file_name' }}&quot;</code></pre>
+
+    </script>
+    <script>
+        window.playbook = {
+            parameters: 
+{
+  "params_file_name": {
+    "format": "Text",
+    "name": "Context File",
+    "value": "context.yml"
+  },
+  "content_file_name": {
+    "format": "Text",
+    "name": "Content File",
+    "value": "content.md"
+  },
+  "output_file_name": {
+    "format": "Text",
+    "name": "Output File",
+    "value": "output.html"
+  },
+  "show_type_info": {
+    "format": "Boolean",
+    "name": "Show Context Type Info",
+    "value": true
+  },
+  "test_secret": {
+    "format": "Secret",
+    "name": "Test Secret",
+    "value": "0bscured?"
+  },
+  "inputs_nomenclature": {
+    "format": "Choice",
+    "name": "Name for pogpen arguments",
+    "values": [
+      "inputs",
+      "parameters",
+      "arguments"
+    ]
+  },
+  "test_number": {
+    "format": "Number",
+    "name": "Test Number",
+    "value": 42
+  }
+}
+        };
+
+        (function () {
+            var inputTypeMappings = {text: 'text', secret: 'password', number: 'number'};
+            // generate fields for each playbook item
+            window.playbook.parameterFields = Object
+                .keys(window.playbook.parameters)
+                .map(function (paramId) {
+                    var param = window.playbook.parameters[paramId];
+
+                    var formatSelector = param.format.toLowerCase();
+
+                    var label = document.createElement('label');
+                    var labelText = document.createElement('span');
+                    var field;
+
+                    labelText.appendChild(document.createTextNode(param.name || paramId));
+
+                    label.className = 'parameter-label';
+                    label.appendChild(labelText);
+
+                    if(formatSelector === 'choice') {
+                        // always select the first item
+                        param.value = param.values[0];
+
+                        field = document.createElement('select');
+                        field.addEventListener('input', function (el) {
+                            param.value = el.target.value;
+                            if (window.playbook.render) {
+                                window.playbook.render();
+                            }
+                        });
+
+                        param.values.forEach(function (val) {
+                            var option = document.createElement('option');
+                            option.appendChild(document.createTextNode(val));
+                            option.value = val;
+                            if (val === param.value) {
+                                option.setAttribute('selected', 'selected');
+                            }
+                            field.appendChild(option);
+                        });
+                    } else {
+                        field = document.createElement('input');
+
+                        if(formatSelector === 'boolean') {
+                            field.setAttribute('type', 'checkbox');
+                            if(param.value) {
+                                field.setAttribute('checked', 'checked');
+                            }
+                            field.addEventListener('change', function (el) {
+                                param.value = !!el.target.checked;
+                                if (window.playbook.render) {
+                                    window.playbook.render();
+                                }
+                            });
+                        } else {
+                            field.setAttribute('type', inputTypeMappings[formatSelector] || 'text');
+                            field.value = param.value;
+                            field.addEventListener('input', function (el) {
+                                param.value = el.target.value;
+                                if (window.playbook.render) {
+                                    window.playbook.render();
+                                }
+                            });
+                        }
+                    }
+
+                    if (field) {
+                        label.appendChild(field);
+                    }
+
+                    return label;
+                });
+        })();
+    </script>
+    <link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Condensed|Roboto+Mono" rel="stylesheet">
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            min-height: 100%;
+            background: #efefff;
+        }
+        * {
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+        code, kbd, pre {
+            font-family: 'Roboto Mono', monospace;
+        }
+        div.parameters-config {
+            width: 30vw;
+            height: 100%;
+            background: #fff;
+            position: fixed;
+            overflow-y: scroll;
+        }
+        div.parameters-config label {
+            display: block;
+            min-height: 48px;
+        }
+        div.parameters-config label input:not([type=checkbox]), div.parameters-config label select {
+            display: block;
+            width: 100%;
+            font-family: 'Roboto Mono', monospace;
+            padding: 0.5ex 1em;
+            border: 1px solid #233;
+            border-radius: 4px;
+            margin-bottom: 1em;
+        }
+        section.playbook-content {
+            margin-left: 30vw;
+            min-height: 100%;
+            overflow-x: hidden;
+        }
+        div.parameters-config, section.playbook-content {
+            padding: 2ex 2em;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            margin: 0;
+            margin-bottom: 0.5ex;
+            padding: 0;
+            padding-bottom: 0.5ex;
+            font-family: 'Roboto Condensed', serif;
+            font-weight: normal;
+            letter-spacing: -0.5px;
+            border-bottom: 1px solid #ddd;
+        }
+        code {
+            color: #a22;
+        }
+        pre {
+            width: 100%;
+            overflow-x: auto;
+            border-radius: 4px;
+            padding: 1ex 1em;
+            background-color: #233;
+        }
+        pre>code {
+            color: #eee;
+            border: none;
+            background: transparent;
+            padding: none;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.10/handlebars.min.js"></script>
+    <script>
+        Handlebars.registerHelper('parameterVal', function (id) {
+            var parameter = window.playbook.parameters[id];
+
+            if (!parameter) {
+                return '<<!MISSING PARAMETER DEFINITION FOR "' + id + '">>';
+            }
+
+            return parameter.value === undefined ? '' : parameter.value;
+        });
+
+        Handlebars.registerHelper('parameterName', function (id) {
+            var parameter = window.playbook.parameters[id];
+
+            if (!parameter) {
+                return '<<!MISSING PARAMETER DEFINITION FOR "' + id + '">>';
+            }
+
+            return parameter.name || id;
+ 
+        });
+    </script>
+</head>
+<body>
+    <div class="parameters-config">
+        <h3>Parameters</h3>
+        <div id="parameters-list"></div>
+    </div>
+    <section id="playbook-content" class="playbook-content">
+    </section>
+    <script>
+        window.playbook.parameterFields.forEach(function (parameterField) {
+            document
+                .getElementById('parameters-list')
+                .appendChild(parameterField);
+        });
+
+        window.playbookTemplate = Handlebars.compile(document.getElementById("content-template").innerHTML);
+
+        window.playbook.render = function () {
+            var target = document.getElementById("playbook-content");
+            target.innerHTML = window.playbookTemplate(window.playbook);
+        }
+
+        window.playbook.render();
+    </script>
+</body>
+</html>
