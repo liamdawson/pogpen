@@ -1,0 +1,35 @@
+parameters:
+  params_file_name:
+    name: Context File
+    format: Text
+    value: context.yml
+  content_file_name:
+    name: Content File
+    format: Text
+    value: content.md
+  output_file_name:
+    name: Output File
+    format: Text
+    value: output.html
+  show_type_info:
+    name: Show Context Type Info
+    format: Boolean
+    value: true
+    description: >
+      Show more details about types
+      in the context file?
+  test_secret:
+    name: Test Secret
+    format: Secret
+    value: 0bscured?
+  inputs_nomenclature:
+    name: Name for pogpen arguments
+    format: Choice
+    values:
+      - inputs
+      - parameters
+      - arguments
+  test_number:
+    name: Test Number
+    format: Number
+    value: 42

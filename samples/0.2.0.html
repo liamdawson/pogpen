@@ -6,12 +6,82 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Playbook</title>
     <script id="content-template" type="text/x-handlebars-template">
-        {{{content}}}
+        <h1>POGPEN Playbook</h1>
+<h2>Usage</h2>
+<p>To use <code>pogpen</code> to create a playbook file, you first need to prepare the {{ parameterVal 'inputs_nomenclature' }}.</p>
+<h3>Context File</h3>
+<p>Parameters are gathered into a context file. See the example
+context file for this playbook for usage samples.</p>
+<p>Save this file as <code>{{ parameterVal 'params_file_name' }}</code>.</p>
+<p>{{#if parameters.show_type_info.value}}</p>
+<p>The following values as supported for the <code>type</code> field:</p>
+<ul>
+<li>Text</li>
+<li>Secret</li>
+<li>Boolean</li>
+<li>Choice</li>
+<li>Number</li>
+</ul>
+<p>Samples of each should be provided in the sample.</p>
+<p>{{else}}
+<strong>NOTE:</strong> <em>Context file type info hidden due to {{parameterName 'show_type_info'}} being <code>{{parameterVal 'show_type_info'}}</code>.</em>
+{{/if}}</p>
+<h3>Content File</h3>
+<p>The content file is a markdown (CommonMark) file that can reference the parameters to
+provide the content of the playbook.</p>
+<p>Refer to this test data file for usage examples.</p>
+<p>Secrets will be shown in plain-text in output,
+at this time. (e.g. <code>{{ parameterVal 'test_secret' }}</code>)</p>
+<p>Save this file as <code>{{ parameterVal 'content_file_name' }}</code>.</p>
+<h3>Rendering</h3>
+<p>Use the <code>pogpen</code> utility with the input parameters <code>{{ parameterName 'params_file_name' }}</code>, <code>{{ parameterName 'content_file_name' }}</code>, and <code>{{ parameterName 'output_file_name' }}</code>, e.g.:</p>
+<pre><code>pogpen &quot;{{ parameterVal 'params_file_name' }}&quot; &quot;{{ parameterVal 'content_file_name' }}&quot; &quot;{{ parameterVal 'output_file_name' }}&quot;</code></pre>
+
     </script>
     <script>
         window.playbook = {
             parameters: 
-{{{parameters}}}
+{
+  "params_file_name": {
+    "format": "Text",
+    "name": "Context File",
+    "value": "context.yml"
+  },
+  "content_file_name": {
+    "format": "Text",
+    "name": "Content File",
+    "value": "content.md"
+  },
+  "output_file_name": {
+    "format": "Text",
+    "name": "Output File",
+    "value": "output.html"
+  },
+  "show_type_info": {
+    "format": "Boolean",
+    "name": "Show Context Type Info",
+    "value": true
+  },
+  "test_secret": {
+    "format": "Secret",
+    "name": "Test Secret",
+    "value": "0bscured?"
+  },
+  "inputs_nomenclature": {
+    "format": "Choice",
+    "name": "Name for pogpen arguments",
+    "values": [
+      "inputs",
+      "parameters",
+      "arguments"
+    ]
+  },
+  "test_number": {
+    "format": "Number",
+    "name": "Test Number",
+    "value": 42
+  }
+}
         };
 
         (function () {

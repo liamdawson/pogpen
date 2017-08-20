@@ -1,58 +1,67 @@
-#[macro_use] extern crate clap;
-#[macro_use] extern crate serde_derive;
-extern crate yaml_rust;
+#[macro_use]
+extern crate clap;
+#[macro_use]
+extern crate serde_derive;
 extern crate pulldown_cmark;
+extern crate serde_yaml;
 
-use clap::{App,ArgMatches};
+use clap::{ArgMatches};
 use std::io::{Read,Write};
 
 mod render;
 
 fn main() {
-    let yml = load_yaml!("config/clap.yml");
-
-    let app = App::from_yaml(yml)
-        .name(crate_name!())
-        .author(crate_authors!())
-        .version(crate_version!())
-        .about(crate_description!());
+    let app = clap_app!(app =>
+        (name: crate_name!())
+        (version: crate_version!())
+        (author: crate_authors!())
+        (about: crate_description!())
+        (@setting SubcommandRequiredElseHelp)
+        (@subcommand render => 
+            (about: "renders input to a playbook file")
+            (@arg CONTEXT: * "context file (as YAML)")
+            (@arg CONTENT: * "content file (as Markdown)")
+            (@arg OUTPUT: * "destination file for rendered playbook (as HTML)")
+        ));
 
     let matches = app.get_matches();
 
     match matches.subcommand_name() {
-        Some("render") => render_from_args(matches.subcommand_matches("render").unwrap()).unwrap(),
+        Some("render") => {
+            match render_from_args(matches.subcommand_matches("render").unwrap()) {
+                Err(err) => {
+                    eprintln!("{}", err);
+                    std::process::exit(2);
+                },
+                _ => println!("playbook successfully rendered")
+            }
+        }
         Some(_) => unreachable!(),
         None => unreachable!()
     }
-
-    println!("finished");
 }
 
 fn render_from_args(matches : &ArgMatches) -> std::io::Result<()> {
-    let params = load_params(matches.value_of("PARAMETERS").unwrap())?;
+    let context = load_context(matches.value_of("CONTEXT").unwrap())?;
     let content = load_content(matches.value_of("CONTENT").unwrap())?;
 
-    let result = render::render(&params, content);
-
     let mut out_file = std::fs::File::create(matches.value_of("OUTPUT").unwrap())?;
-    out_file.write_all(result?.as_bytes())?;
+
+    out_file.write_all(render::render(context, content)?.as_bytes())?;
     out_file.flush()?;
 
     return Ok(());
 }
 
-fn load_params(path : &str) -> std::io::Result<yaml_rust::Yaml> {
-    let mut params_str = String::new();
-    let mut params_file = std::fs::File::open(path)?;
-    params_file.read_to_string(&mut params_str)?;
+fn load_context(path : &str) -> std::io::Result<render::context::ContextFile> {
+    let mut context_str = String::new();
+    let mut context_file = std::fs::File::open(path)?;
+    context_file.read_to_string(&mut context_str)?;
 
-    let mut params_yaml = yaml_rust::YamlLoader::load_from_str(&mut params_str)
-        .map_err(|err| { invalid_data_err(&format!("unable to read YAML data: {:?}", err)) })?;
+    let context : render::context::ContextFile = serde_yaml::from_str(&mut context_str)
+        .map_err(|err| invalid_data_err(&format!("unable to read context file: {}", err)))?;
 
-    return match params_yaml.pop() {
-        Some(yaml) => Ok(yaml),
-        None => Err(invalid_data_err("unable to find a valid YAML document in the parameters input file"))
-    }
+    return Ok(context);
 }
 
 fn load_content(path : &str) -> std::io::Result<String> {
