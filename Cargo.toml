@@ -1,8 +1,15 @@
 [package]
 name = "pogpen"
-description = "renders parameter inputs and a markdown file to an easy-to-follow operations game plan"
+description = "renders parameter inputs and a markdown file to an easy-to-use operations game plan"
 version = "0.2.0"
 authors = ["Liam Dawson <liam@liamdawson.me>"]
+readme = "README.md"
+categories = ["command-line-utilities"]
+license = "Apache-2.0/MIT"
+
+[badges]
+travis-ci = { repository = "liamdawson/pogpen" }
+appveyor = { repository = "liamdawson/pogpen", service = "github" }
 
 [dependencies]
 pulldown-cmark = "0.0.14"
